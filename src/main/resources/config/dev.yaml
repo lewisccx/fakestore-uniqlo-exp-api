@@ -4,15 +4,16 @@ http:
   port: "8081"
   timeout: "300000"
 fakestoreproductapi:
-  host: "fakestore-product-proxy-api.sg-s1.cloudhub.io"
+  host: "fakestore-product-prc-api-v1.sg-s1.cloudhub.io"
   port: "80"
   basepath: "/"
   protocol: "HTTP"
 fakestorecartapi:
-  host: "fakestore-cart-proxy-api.sg-s1.cloudhub.io"
+  host: "fakestore-cart-prc-api-v1.sg-s1.cloudhub.io"
   port: "80"
   basepath: "/"
   protocol: "HTTP"
 version: "v1"
 context: "fakestore"
 layer: "exp"
+prcpath: "/api/prc/fakestore/v1"

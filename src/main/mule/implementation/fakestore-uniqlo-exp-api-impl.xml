@@ -9,7 +9,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<logger level="INFO" doc:name="Start get all products" doc:id="e7a795fa-934f-400d-ad72-c6174e692068" message="Start get all products"/>
 		<set-variable value='#[message.attributes.queryParams.sort as String default "asc"]' doc:name="Set sort parameter" doc:id="18fd9e9d-ba5a-49d1-8141-dd4349130aec" variableName="sort" />
 		<set-variable value="#[message.attributes.queryParams.limit as String default 20]" doc:name="Set limit parameter" doc:id="9f76ac55-a000-4e0b-8454-a8f7f17088f5" variableName="limit" />
-		<http:request method="GET" doc:name="Fakestore Product Proxy API" doc:id="38e9c006-6636-4abb-8c06-2e9796a0d4f5" config-ref="fakestore-product-api-config" path="/products" responseTimeout="${http.timeout}">
+		<http:request method="GET" doc:name="Fakestore Product Proxy API" doc:id="38e9c006-6636-4abb-8c06-2e9796a0d4f5" config-ref="fakestore-product-api-config" path="${prcpath}/products" responseTimeout="${http.timeout}">
 			<http:query-params ><![CDATA[#[output application/java
 ---
 {
@@ -25,12 +25,12 @@ output application/json
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="End of get all products" doc:id="46619c4c-f5e0-4a7c-b967-ba3ad383a414" />
+		<logger level="INFO" doc:name="End of get all products" doc:id="46619c4c-f5e0-4a7c-b967-ba3ad383a414" message="End of get all products"/>
 	</flow>
 	<flow name="getProductById-implFlow" doc:id="057ddde2-3189-4cb0-9cc6-490729824695" >
 		<logger level="INFO" doc:name="Start get product by ID " doc:id="dc88b4cc-4ed3-4d61-b9d4-57efba4453e0" message="Start get product by ID "/>
 		<set-variable value="#[attributes.uriParams.id]" doc:name="Set product ID" doc:id="09f498d8-193e-4487-bcec-6639415c0ec9" variableName="productId"/>
-		<http:request method="GET" doc:name="Fakestore Product Proxy API" doc:id="87080bb4-e899-4342-93cb-eae42c1470f5" config-ref="fakestore-product-api-config" path="/products/{id}" responseTimeout="${http.timeout}">
+		<http:request method="GET" doc:name="Fakestore Product Proxy API" doc:id="87080bb4-e899-4342-93cb-eae42c1470f5" config-ref="fakestore-product-api-config" path="${prcpath}/products/{id}" responseTimeout="${http.timeout}">
 			<http:uri-params ><![CDATA[#[output application/java
 ---
 {
@@ -64,7 +64,12 @@ output application/json
 	</flow>
 	<flow name="top10Products-implFlow" doc:id="c393c158-e3d6-48de-bba8-cfc8714df5ac" >
 		<logger level="INFO" doc:name="Start get top 10 products" doc:id="c062a1c5-bf25-48bf-8147-81287710e831" />
-		<http:request method="GET" doc:name="Fakestore Product Proxy API" doc:id="74a47033-69ee-4fbb-818c-b8df6502553d" config-ref="fakestore-product-api-config" path="/products/top10" responseTimeout="${http.timeout}">
+		<http:request method="GET" doc:name="Fakestore Product Proxy API" doc:id="74a47033-69ee-4fbb-818c-b8df6502553d" config-ref="fakestore-product-api-config" path="${prcpath}/products/top10" responseTimeout="${http.timeout}">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Content-Type" : "application/json"
+}]]]></http:headers>
 		</http:request>
 		<ee:transform doc:name="top 10 products" doc:id="520543ec-a7d8-4937-a306-8cc8ac79161a" >
 			<ee:message >
@@ -78,7 +83,7 @@ payload]]></ee:set-payload>
 	</flow>
 	<flow name="getAllCarts-implFlow" doc:id="98153bf3-9290-4bdd-b9f5-0f25108b486c" >
 		<logger level="INFO" doc:name="Start get all carts" doc:id="3425bef1-1439-4600-a888-71d960feaf00" message="Start get all carts"/>
-		<http:request method="GET" doc:name="Fakestore Cart Proxy API" doc:id="966f0d54-4f41-42ab-b36b-9a1438269c6f" config-ref="fakestore-cart-api-config" path="/carts" responseTimeout="${http.timeout}"/>
+		<http:request method="GET" doc:name="Fakestore Cart Proxy API" doc:id="966f0d54-4f41-42ab-b36b-9a1438269c6f" config-ref="fakestore-cart-api-config" path="${prcpath}/carts" responseTimeout="${http.timeout}"/>
 		<ee:transform doc:name="carts" doc:id="7ded9ef2-a860-4f72-a936-296fabc0fbb7" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -95,7 +100,7 @@ payload]]></ee:set-payload>
 	<flow name="getCartById-implFlow" doc:id="18cb2939-7993-405c-8268-5bfb2058ec37" >
 		<logger level="INFO" doc:name="Start get cart by ID" doc:id="c3e3d553-3b40-4770-bb5f-f70ed5b7ed0d" message="Start get cart by ID"/>
 		<flow-ref doc:name="Set cart ID" doc:id="83c633e3-0155-4b56-a168-c302444c2f5d" name="setCartID"/>
-		<http:request method="GET" doc:name="Fakestore Cart Proxy API" doc:id="8b83dfde-be06-4d37-94be-ac881e60d1b7" config-ref="fakestore-cart-api-config" path="/carts/{id}" responseTimeout="${http.timeout}">
+		<http:request method="GET" doc:name="Fakestore Cart Proxy API" doc:id="8b83dfde-be06-4d37-94be-ac881e60d1b7" config-ref="fakestore-cart-api-config" path="${prcpath}/carts/{id}" responseTimeout="${http.timeout}">
 			<http:uri-params ><![CDATA[#[output application/java
 ---
 {
@@ -115,7 +120,7 @@ payload]]></ee:set-payload>
 	<flow name="updateCartByID-implFlow" doc:id="d1a4e152-fe9f-4c02-adee-73972b8175e7" >
 		<logger level="INFO" doc:name="Start update cart by ID" doc:id="614f467b-8f48-49e9-91d6-51bbdc7fa8b8" />
 		<flow-ref doc:name="Set cart ID" doc:id="9fdab7af-9ad7-48ec-bcdf-12e4670db20d" name="setCartID"/>
-		<http:request method="PUT" doc:name="Fakestore Cart Proxy API" doc:id="38bb0615-2552-4f2b-b2b9-e6a0f989d4f8" config-ref="fakestore-cart-api-config" path="/carts/{id}" responseTimeout="${http.timeout}">
+		<http:request method="PUT" doc:name="Fakestore Cart Proxy API" doc:id="38bb0615-2552-4f2b-b2b9-e6a0f989d4f8" config-ref="fakestore-cart-api-config" path="${prcpath}/carts/{id}" responseTimeout="${http.timeout}">
 			<http:uri-params><![CDATA[#[output application/java
 ---
 {
@@ -135,7 +140,7 @@ payload]]></ee:set-payload>
 	<flow name="deleteCartById-implFlow" doc:id="8d74877c-1799-4213-a2b4-d4e327cba9df" >
 		<logger level="INFO" doc:name="Start delete cart by ID" doc:id="3adba359-987f-4895-9f83-67ac62843bb1" message="Start delete cart by ID"/>
 		<flow-ref doc:name="set CartID" doc:id="9fe99df3-b724-4c1c-9831-915dfdf82a36" name="setCartID" />
-		<http:request method="DELETE" doc:name="Fakestore Cart API" doc:id="d659c311-64a0-4b41-bcc1-1beb46a48bc6" config-ref="fakestore-cart-api-config" path="/carts/{id}" responseTimeout="${http.timeout}">
+		<http:request method="DELETE" doc:name="Fakestore Cart API" doc:id="d659c311-64a0-4b41-bcc1-1beb46a48bc6" config-ref="fakestore-cart-api-config" path="${prcpath}/carts/{id}" responseTimeout="${http.timeout}">
 			<http:uri-params ><![CDATA[#[output application/java
 ---
 {
@@ -153,8 +158,8 @@ payload]]></ee:set-payload>
 		<logger level="INFO" doc:name="End of delete cart by ID" doc:id="0580efc6-fd5c-454f-8993-8ec619f4f100" message="End of delete cart by ID"/>
 	</flow>
 	<flow name="createNewCart-implFlow" doc:id="b2380c29-ffb4-4d58-892b-cb5a1085b7b0" >
-		<logger level="INFO" doc:name="Start create new cart" doc:id="ef9feb2c-2aa3-4dd4-a944-9109ca153700" />
-		<http:request method="POST" doc:name="Fakestore Cart Proxy API" doc:id="81b32ad6-6eae-43fe-9dd0-38d9463fa9b6" config-ref="fakestore-cart-api-config" path="/carts" responseTimeout="${http.timeout}">
+		<logger level="INFO" doc:name="Start create new cart" doc:id="ef9feb2c-2aa3-4dd4-a944-9109ca153700" message="Start create new cart"/>
+		<http:request method="POST" doc:name="Fakestore Cart Proxy API" doc:id="81b32ad6-6eae-43fe-9dd0-38d9463fa9b6" config-ref="fakestore-cart-api-config" path="${prcpath}/carts" responseTimeout="${http.timeout}">
 		</http:request>
 		<ee:transform doc:name="new cart" doc:id="a1a4de42-ffad-4aa1-a4e4-9fc36d80a7dc">
 			<ee:message>
@@ -164,11 +169,11 @@ output application/json
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="End of create new cart" doc:id="db37cbe4-0c41-4b56-b3a0-7e1eba53f709" />
+		<logger level="INFO" doc:name="End of create new cart" doc:id="db37cbe4-0c41-4b56-b3a0-7e1eba53f709" message="End of create new cart"/>
 	</flow>
 	<flow name="checkoutCart-implFlow" doc:id="f1144f3d-e28b-49a5-b0ff-c6035e229737" >
-		<logger level="INFO" doc:name="Start checkout cart" doc:id="7a0a353f-c183-43ae-90fa-b1884ef5fa8f" />
-		<http:request method="POST" doc:name="Fakestore Cart Proxy API" doc:id="4720cf45-8d97-49df-8972-ddd7199bbb99" config-ref="fakestore-cart-api-config" path="/checkout" responseTimeout="${http.timeout}"/>
+		<logger level="INFO" doc:name="Start checkout cart" doc:id="7a0a353f-c183-43ae-90fa-b1884ef5fa8f" message="Start checkout cart"/>
+		<http:request method="POST" doc:name="Fakestore Cart Proxy API" doc:id="4720cf45-8d97-49df-8972-ddd7199bbb99" config-ref="fakestore-cart-api-config" path="${prcpath}/checkout" responseTimeout="${http.timeout}"/>
 		<ee:transform doc:name="order" doc:id="b2c74e09-50c9-4f99-8bbb-5fc20fe658fe" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -177,6 +182,6 @@ output application/json
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="End of checkout cart" doc:id="fc518730-2abc-413c-a8f7-4629b3d0ad1a" />
+		<logger level="INFO" doc:name="End of checkout cart" doc:id="fc518730-2abc-413c-a8f7-4629b3d0ad1a" message="End of checkout cart"/>
 	</flow>
 </mule>
